@@ -1,0 +1,11 @@
+#include sl.io;
+
+exampleFiles.helloWorld
+{
+	[public]
+	[constructor]
+	() 
+	{
+		io.out("Hello World!");
+	}
+}
