@@ -6,6 +6,6 @@ string fileContent = File.ReadAllText(Path.GetDirectoryName(Assembly.GetCallingA
 
 Lexer l = new Lexer(fileContent);
 
-ILexerElement[] elements = l.Parse();
+ILexerElement[] unused = l.Parse();
 
 Console.WriteLine();

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using KaroCompiler.LexerElements;
 using String = KaroCompiler.LexerElements.String;
 
@@ -80,15 +76,15 @@ namespace KaroCompiler
                     {
                         _currentlyParsingString = true;
                         elements.Add(new HashSymbol(_currentLine, _currentColumn));
-                        elements.Add(new String(ParseStringOrIdentifier(new char[] { ';' }), _currentLine, _currentColumn + 1));
-                        elements.Add(new Semicolon(_currentLine, _currentColumn + 1 +((String)elements.Last()).Value.Length));
+                        elements.Add(new String(ParseStringOrIdentifier(new[] { ';' }), _currentLine, _currentColumn + 1));
+                        elements.Add(new Semicolon(_currentLine, _currentColumn + 1 + ((String)elements.Last()).Value.Length));
                         _currentlyParsingString = false;
                         break;
                     }
                     case '"':
                     {
                         _currentlyParsingString = true;
-                        elements.Add(new String(ParseStringOrIdentifier(new char[] { '"' }), _currentLine, _currentColumn));
+                        elements.Add(new String(ParseStringOrIdentifier(new[] { '"' }), _currentLine, _currentColumn));
                         _currentlyParsingString = false;
                         break;
                     }
