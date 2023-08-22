@@ -20,6 +20,10 @@ namespace KaroCompiler
 
         private char[] _ignoreChars = { '\t', '\n', '\r' };
 
+        private int _currentLine = 1;
+
+        private int _currentColumn = 1;
+
         private char C
         {
             get
@@ -31,7 +35,18 @@ namespace KaroCompiler
                     _ignoreChars = !_currentlyParsingString
                         ? new[] { '\t', '\n', '\r', ' ' }
                         : new[] { '\t', '\n', '\r' };
-                    while (_ignoreChars.Contains(_fileContent[_pos - 1])) _pos++;
+                    while (_ignoreChars.Contains(_fileContent[_pos - 1]))
+                    {
+                        if (_fileContent[_pos - 1] == '\n')
+                        {
+                            _currentLine++;
+                            _currentColumn = 1;
+                        }
+
+                        _pos++;
+                        _currentColumn++;
+                    }
+
                     return _fileContent[_pos - 1];
                 }
                 catch (IndexOutOfRangeException)
@@ -58,63 +73,63 @@ namespace KaroCompiler
                 {
                     case ';':
                     {
-                        elements.Add(new Semicolon());
+                        elements.Add(new Semicolon(_currentLine, _currentColumn));
                         break;
                     }
                     case '#':
                     {
                         _currentlyParsingString = true;
-                        elements.Add(new HashSymbol());
-                        elements.Add(new String(ParseStringOrIdentifier(new char[] { ';' })));
-                        elements.Add(new Semicolon());
+                        elements.Add(new HashSymbol(_currentLine, _currentColumn));
+                        elements.Add(new String(ParseStringOrIdentifier(new char[] { ';' }), _currentLine, _currentColumn + 1));
+                        elements.Add(new Semicolon(_currentLine, _currentColumn + 1 +((String)elements.Last()).Value.Length));
                         _currentlyParsingString = false;
                         break;
                     }
                     case '"':
                     {
                         _currentlyParsingString = true;
-                        elements.Add(new String(ParseStringOrIdentifier(new char[] { '"' })));
+                        elements.Add(new String(ParseStringOrIdentifier(new char[] { '"' }), _currentLine, _currentColumn));
                         _currentlyParsingString = false;
                         break;
                     }
                     case '{':
                     {
-                        elements.Add(new OpenCurlyBracket());
+                        elements.Add(new OpenCurlyBracket(_currentLine, _currentColumn));
                         break;
                     }
                     case '}':
                     {
-                        elements.Add(new CloseCurlyBracket());
+                        elements.Add(new CloseCurlyBracket(_currentLine, _currentColumn));
                         break;
                     }
                     case '[':
                     {
-                        elements.Add(new OpenSquareBracket());
+                        elements.Add(new OpenSquareBracket(_currentLine, _currentColumn));
                         break;
                     }
                     case ']':
                     {
-                        elements.Add(new CloseSquareBracket());
+                        elements.Add(new CloseSquareBracket(_currentLine, _currentColumn));
                         break;
                     }
                     case '(':
                     {
-                        elements.Add(new OpenParenthesis());
+                        elements.Add(new OpenParenthesis(_currentLine, _currentColumn));
                         break;
                     }
                     case ')':
                     {
-                        elements.Add(new CloseParenthesis());
+                        elements.Add(new CloseParenthesis(_currentLine, _currentColumn));
                         break;
                     }
                     case '.':
                     {
-                        elements.Add(new Dot());
+                        elements.Add(new Dot(_currentLine, _currentColumn));
                         break;
                     }
                     default:
                         _pos--;
-                        elements.Add(new Identifier(ParseStringOrIdentifier(new[] { '.', ';', '=', '!', '?', '[', ']', '(', ')', '<', '>', '{', '}' })));
+                        elements.Add(new Identifier(ParseStringOrIdentifier(new[] { '.', ';', '=', '!', '?', '[', ']', '(', ')', '<', '>', '{', '}' }), _currentLine, _currentColumn));
                         _pos--;
                         break;
                 }

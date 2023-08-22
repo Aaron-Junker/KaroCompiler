@@ -4,9 +4,9 @@
     {
         public string Value;
 
-        public String(string value)
+        public String(string value, int line, int column) : base(line, column)
         {
-            this.Value = value;
+            Value = value;
         }
     }
 }

@@ -4,9 +4,9 @@
     {
         public string Value;
 
-        public Identifier(string value)
+        public Identifier(string value, int line, int column) : base(line, column)
         {
-            this.Value = value;
+            Value = value;
         }
     }
 }
